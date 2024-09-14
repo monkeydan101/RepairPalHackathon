@@ -5,7 +5,8 @@ import ApplicationForm from './Components/ApplicationForm';
 import ApplicationList from './Components/ApplicationList';
 import sendEmail from './Components/ReminderEmail';
 import Navbar from './Components/NavBar';
-import ResumeEvaluator from './Components/ResumeEvaluator';
+import Resume from './Components/Resume';
+import ApplicationStatusChart from './Components/ApplicationStatusChart';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const theme = createTheme({
@@ -95,6 +96,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={
             <>
+              {/* <ApplicationStatusChart /> */}
 
               <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
                 <Typography variant="h5" gutterBottom>
@@ -112,7 +114,7 @@ const App = () => {
 
             </>
           } />
-          <Route path="/resume" element={<ResumeEvaluator />} />
+          <Route path="/resume" element={<Resume />} />
           <Route path="/new-application" element={<ApplicationForm onAddApplication={handleAddApplication} />} />
         </Routes>
       </div>

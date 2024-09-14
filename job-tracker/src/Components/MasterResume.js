@@ -142,7 +142,7 @@ const MasterResume = () => {
   );
 
   return (
-    <Box sx={{ padding: '20px' }}>
+    <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Master Resume
       </Typography>

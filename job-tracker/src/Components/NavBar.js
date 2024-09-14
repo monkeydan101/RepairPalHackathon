@@ -32,7 +32,7 @@ const Navbar = () => {
               }}
             >
               <img src={logo} alt="logo" style={{ width: "36px", height: "36px", objectFit: "contain" }} />
-              <p style={{ color: "white", fontSize: "18px", fontWeight: "bold", cursor: "pointer" }}>Job Application Organizer</p>
+              <p style={{ color: "white", fontSize: "18px", fontWeight: "bold", cursor: "pointer" }}>Job Rejection Organizer</p>
             </Link>
 
             <ul style={{ display: "flex", listStyleType: "none", flexDirection: "row", gap: "2.5rem" }}>
