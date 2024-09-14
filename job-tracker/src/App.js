@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import ResumeEvaluator from './ResumeEvaluator';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 const ApplicationStatus = Object.freeze({
   PENDING: 'Pending',
@@ -40,84 +42,97 @@ function App() {
   };
 
   return (
-    <div>
-      {/* <h1>Job Applications</h1>
-      <ul>
-        {applications.map(app => (
-          <li key={app.id}>
-            {app.company} - {app.position} - {app.status}
-          </li>
-        ))}
-      </ul> */}
-
+    <Router>
       <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Add New Application
-        </Typography>
-        <form onSubmit={handleSubmit}>
-        <TextField
-            fullWidth
-            margin="normal"
-            label="Company"
-            variant="outlined"
-            value={newApplication.company}
-            onChange={(e) => setNewApplication({ ...newApplication, company: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Position"
-            variant="outlined"
-            value={newApplication.position}
-            onChange={(e) => setNewApplication({ ...newApplication, position: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Date Applied"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            variant="outlined"
-            value={newApplication.dateApplied}
-            onChange={(e) => setNewApplication({ ...newApplication, dateApplied: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Status"
-            variant="outlined"
-            value={newApplication.status}
-            onChange={(e) => setNewApplication({ ...newApplication, status: e.target.value })}
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            type="submit"
-            sx={{ mt: 2 }}
-          >
-            Add Application
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Welcome to the Job Portal
+          </Typography>
+
+          {/* Links to navigate between routes */}
+          <Button variant="contained" color="primary" component={Link} to="/" sx={{ mr: 2 }}>
+            Home
           </Button>
-        </form>
-      </Box>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Job Applications
-        </Typography>
-        <List>
-          {applications.map(app => (
-            <ListItem key={app.id}>
-              <ListItemText
-                primary={`${app.company} - ${app.position}`}
-                secondary={app.status}
-              />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    </Container>
-    </div>
+          <Button variant="contained" color="primary" component={Link} to="/resume" sx={{ mr: 2 }}>
+            Resume Evaluator
+          </Button>
+        </Box>
+
+        {/* Define Routes */}
+        <Routes>
+          <Route path="/" element={
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="h4" component="h1" gutterBottom>
+                Add New Application
+              </Typography>
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Company"
+                  variant="outlined"
+                  value={newApplication.company}
+                  onChange={(e) => setNewApplication({ ...newApplication, company: e.target.value })}
+                />
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Position"
+                  variant="outlined"
+                  value={newApplication.position}
+                  onChange={(e) => setNewApplication({ ...newApplication, position: e.target.value })}
+                />
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Date Applied"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  variant="outlined"
+                  value={newApplication.dateApplied}
+                  onChange={(e) => setNewApplication({ ...newApplication, dateApplied: e.target.value })}
+                />
+                <TextField
+                  fullWidth
+                  margin="normal"
+                  label="Status"
+                  variant="outlined"
+                  value={newApplication.status}
+                  onChange={(e) => setNewApplication({ ...newApplication, status: e.target.value })}
+                />
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ mt: 2 }}
+                >
+                  Add Application
+                </Button>
+              </form>
+
+              <Box sx={{ mt: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                  Job Applications
+                </Typography>
+                <List>
+                  {applications.map(app => (
+                    <ListItem key={app.id}>
+                      <ListItemText
+                        primary={`${app.company} - ${app.position}`}
+                        secondary={app.status}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </Box>
+          } />
+
+          <Route path="/resume" element={<ResumeEvaluator />} />
+        </Routes>
+      </Container>
+    </Router>
   );
 }
 
