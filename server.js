@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000;
 
+const masterResumeRoute = require('./routers/MasterResume');
+
 app.use(cors());
 
 let jobApps = [
@@ -31,6 +33,8 @@ app.get('/applications', (req, res) => {
 });
 
 app.use(bodyParser.json());
+
+app.use('/masterresume', masterResumeRoute);
 
 app.post('/applications', (req, res) => {
     const newApp = {
