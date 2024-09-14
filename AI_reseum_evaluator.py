@@ -4,10 +4,14 @@ import getpass
 import os
 import sys
 
+from dotenv import load_dotenv
 
-# os.environ["OPENAI_API_KEY"] = ""
+# Load the .env file
+load_dotenv()
 from langchain_openai import ChatOpenAI
 
+
+os.getenv('API_KEY')
 model = ChatOpenAI(model="gpt-4")
 
 from langchain_core.messages import HumanMessage, SystemMessage
