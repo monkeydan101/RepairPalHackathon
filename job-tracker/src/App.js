@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { Container, Box, Typography, TextField, Button } from '@mui/material';
+import emailjs from 'emailjs-com'; // Make sure to install emailjs-com
 import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Select, MenuItem } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ResumeEvaluator from './ResumeEvaluator';
 
-const ApplicationStatus = Object.freeze({
-  PENDING: 'Pending',
-  ACCEPTED: 'Accepted',
-  REJECTED: 'Rejected'
-});
 
-function App() {
+//init emailjs with your user id
+emailjs.init('KMAWV91wrDXkqm3Hh');
+
+
+const App = () => {
   const [applications, setApplications] = useState([]);
   const [newApplication, setNewApplication] = useState({
     id: '',
     company: '',
     position: '',
     dateApplied: '',
+    status: 'PENDING',
+    email: '',
+    remindInMinutes: '' // Add remindInMinutes field
     status: ApplicationStatus.PENDING,
     notes: ''
   });
@@ -67,7 +71,34 @@ function App() {
   };
   
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewApplication(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const sendEmail = (email, minutes) => {
+    const milliseconds = minutes * 60 * 1000;
+
+    setTimeout(() => {
+      const templateParams = {
+        to_email: newApplication.email,
+        message: 'This is a reminder to follow up on your application at ' + newApplication.company + '.'
+      };
+
+      emailjs.send('service_zehmlri', 'template_7k0g1oq', templateParams, 'KMAWV91wrDXkqm3Hh')
+        .then((response) => {
+          console.log('Email sent successfully!', response.status, response.text);
+        }, (error) => {
+          console.error('Failed to send email.', error);
+        });
+    }, milliseconds);
+  };
+
   return (
+
     <Router>
       <Container maxWidth="sm">
         <Box sx={{ mt: 4 }}>
@@ -80,14 +111,55 @@ function App() {
               margin="normal"
               label="Company"
               variant="outlined"
+
               value={newApplication.company}
               onChange={(e) => setNewApplication({ ...newApplication, company: e.target.value })}
+
             />
             <TextField
               fullWidth
               margin="normal"
               label="Position"
               variant="outlined"
+              name="position"
+              onChange={handleChange}
+            />
+            <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 2 }}>
+              Enter your email to be reminded to follow up
+            </Typography>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Email"
+              variant="outlined"
+              name="email"
+              value={newApplication.email}
+              onChange={handleChange}
+            />
+            <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 2 }}>
+              Remind me in
+              <TextField
+                type="number"
+                name="remindInMinutes"
+                value={newApplication.remindInMinutes}
+                onChange={handleChange}
+                sx={{ width: '60px', mx: 1 }}
+                InputProps={{
+                  style: {
+                    height: '30px', // Adjust the height as needed
+                    fontSize: '16px' // Match the font size to the input text size
+                  }
+                }}
+              />
+              minutes
+            </Typography>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </form>
+        </Box>
+      </Container>
+    </div>
               value={newApplication.position}
               onChange={(e) => setNewApplication({ ...newApplication, position: e.target.value })}
             />
@@ -313,6 +385,6 @@ function App() {
       </Container>
     </Router>
   );
-}
+};
 
 export default App;
