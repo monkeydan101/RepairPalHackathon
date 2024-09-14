@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import emailjs from 'emailjs-com'; // Make sure to install emailjs-com
 import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Select, MenuItem } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -8,10 +7,14 @@ import SaveIcon from '@mui/icons-material/Save';
 import { BrowserRouter as Router } from 'react-router-dom';
 import ResumeEvaluator from './ResumeEvaluator';
 
-
-//init emailjs with your user id
+// Initialize EmailJS with your user ID
 emailjs.init('KMAWV91wrDXkqm3Hh');
 
+const ApplicationStatus = {
+  PENDING: 'Pending',
+  ACCEPTED: 'Accepted',
+  REJECTED: 'Rejected'
+};
 
 const App = () => {
   const [applications, setApplications] = useState([]);
@@ -22,8 +25,7 @@ const App = () => {
     dateApplied: '',
     status: 'PENDING',
     email: '',
-    remindInMinutes: '' // Add remindInMinutes field
-    status: ApplicationStatus.PENDING,
+    remindInMinutes: '', // Add remindInMinutes field
     notes: ''
   });
   const [editId, setEditId] = useState(null);
@@ -47,7 +49,8 @@ const App = () => {
       .then((response) => response.json())
       .then((data) => {
         setApplications([...applications, data]);
-        setNewApplication({ id: '', company: '', position: '', dateApplied: '', status: ApplicationStatus.PENDING }); // reset the form
+        setNewApplication({ id: '', company: '', position: '', dateApplied: '', status: ApplicationStatus.PENDING, email: '', remindInMinutes: '', notes: '' }); // reset the form
+        sendEmail(data.email, data.remindInMinutes); // Call sendEmail here
       });
   };
 
@@ -69,7 +72,6 @@ const App = () => {
       setEditId(null);
     });
   };
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,7 +100,6 @@ const App = () => {
   };
 
   return (
-
     <Router>
       <Container maxWidth="sm">
         <Box sx={{ mt: 4 }}>
@@ -111,10 +112,9 @@ const App = () => {
               margin="normal"
               label="Company"
               variant="outlined"
-
+              name="company"
               value={newApplication.company}
-              onChange={(e) => setNewApplication({ ...newApplication, company: e.target.value })}
-
+              onChange={handleChange}
             />
             <TextField
               fullWidth
@@ -122,8 +122,33 @@ const App = () => {
               label="Position"
               variant="outlined"
               name="position"
+              value={newApplication.position}
               onChange={handleChange}
             />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Date Applied"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              variant="outlined"
+              name="dateApplied"
+              value={newApplication.dateApplied}
+              onChange={handleChange}
+            />
+            <Select
+              fullWidth
+              margin="normal"
+              name="status"
+              value={newApplication.status}
+              onChange={handleChange}
+            >
+              {Object.values(ApplicationStatus).map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+            </Select>
             <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 2 }}>
               Enter your email to be reminded to follow up
             </Typography>
@@ -158,47 +183,14 @@ const App = () => {
             </Button>
           </form>
         </Box>
-      </Container>
-    </div>
-              value={newApplication.position}
-              onChange={(e) => setNewApplication({ ...newApplication, position: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Date Applied"
-              type="date"
-              InputLabelProps={{ shrink: true }}
-              variant="outlined"
-              value={newApplication.dateApplied}
-              onChange={(e) => setNewApplication({ ...newApplication, dateApplied: e.target.value })}
-            />
-            <Select
-              fullWidth
-              margin="normal"
-              value={newApplication.status}
-              onChange={(e) => setNewApplication({ ...newApplication, status: e.target.value })}
-            >
-              {Object.values(ApplicationStatus).map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-            </Select>
-            <Button fullWidth variant="contained" color="primary" type="submit" sx={{ mt: 2 }}>
-              Add Application
-            </Button>
-          </form>
-        </Box>
         <Box sx={{ mt: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Job Applications
           </Typography>
-
           <List subheader="Pending">
             <hr />
             {applications
-              .filter((app) => app.status === "Pending")
+              .filter((app) => app.status === ApplicationStatus.PENDING)
               .map((app) => (
                 <ListItem key={app.id}>
                   <ListItemText
@@ -211,7 +203,7 @@ const App = () => {
                             <Select
                               value={editStatus}
                               onChange={(e) => setEditStatus(e.target.value)}
-                              sx={{ mt: 1, width: "150px" }}
+                              sx={{ mt: 1, width: '150px' }}
                             >
                               {Object.values(ApplicationStatus).map((status) => (
                                 <MenuItem key={status} value={status}>
@@ -233,7 +225,7 @@ const App = () => {
                               size="small"
                               multiline
                               rows={2}
-                              sx={{ mt: 1, width: "300px" }}
+                              sx={{ mt: 1, width: '300px' }}
                             />
                           ) : (
                             app.notes
@@ -256,11 +248,10 @@ const App = () => {
                 </ListItem>
               ))}
           </List>
-
           <List subheader="Accepted">
             <hr />
             {applications
-              .filter((app) => app.status === "Accepted")
+              .filter((app) => app.status === ApplicationStatus.ACCEPTED)
               .map((app) => (
                 <ListItem key={app.id}>
                   <ListItemText
@@ -273,7 +264,7 @@ const App = () => {
                             <Select
                               value={editStatus}
                               onChange={(e) => setEditStatus(e.target.value)}
-                              sx={{ mt: 1, width: "150px" }}
+                              sx={{ mt: 1, width: '150px' }}
                             >
                               {Object.values(ApplicationStatus).map((status) => (
                                 <MenuItem key={status} value={status}>
@@ -295,7 +286,7 @@ const App = () => {
                               size="small"
                               multiline
                               rows={2}
-                              sx={{ mt: 1, width: "300px" }}
+                              sx={{ mt: 1, width: '300px' }}
                             />
                           ) : (
                             app.notes
@@ -318,11 +309,10 @@ const App = () => {
                 </ListItem>
               ))}
           </List>
-
           <List subheader="Rejected">
             <hr />
             {applications
-              .filter((app) => app.status === "Rejected")
+              .filter((app) => app.status === ApplicationStatus.REJECTED)
               .map((app) => (
                 <ListItem key={app.id}>
                   <ListItemText
@@ -335,7 +325,7 @@ const App = () => {
                             <Select
                               value={editStatus}
                               onChange={(e) => setEditStatus(e.target.value)}
-                              sx={{ mt: 1, width: "150px" }}
+                              sx={{ mt: 1, width: '150px' }}
                             >
                               {Object.values(ApplicationStatus).map((status) => (
                                 <MenuItem key={status} value={status}>
@@ -357,7 +347,7 @@ const App = () => {
                               size="small"
                               multiline
                               rows={2}
-                              sx={{ mt: 1, width: "300px" }}
+                              sx={{ mt: 1, width: '300px' }}
                             />
                           ) : (
                             app.notes
