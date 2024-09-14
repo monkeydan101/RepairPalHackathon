@@ -45,7 +45,7 @@ const ApplicationForm = ({ onAddApplication }) => {
   };
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Add New Application
       </Typography>

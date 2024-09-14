@@ -4,6 +4,9 @@ import { Container, Box, Typography, Paper, Grid, CssBaseline } from '@mui/mater
 import ApplicationForm from './Components/ApplicationForm';
 import ApplicationList from './Components/ApplicationList';
 import sendEmail from './Components/ReminderEmail';
+import Navbar from './Components/NavBar';
+import ResumeEvaluator from './Components/ResumeEvaluator';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -83,49 +86,38 @@ const App = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{
-          backgroundColor: 'background.default',
-          minHeight: '100vh',
-          py: 4,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography variant="h4" gutterBottom align="center" sx={{ mb: 4 }}>
-            Application Tracker
-          </Typography>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={4}>
-              <Paper elevation={3} sx={{ p: 3 }}>
+
+    <Router>
+      <div>
+        
+        <Navbar />
+
+        <Routes>
+          <Route path="/" element={
+            <>
+
+              <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
                 <Typography variant="h5" gutterBottom>
-                  New Application
-                </Typography>
-                <ApplicationForm onAddApplication={handleAddApplication} />
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <Paper elevation={3} sx={{ p: 3 }}>
-                <Typography variant="h5" gutterBottom>
-                  Applications
+                  Job Applications
                 </Typography>
                 {Object.values(ApplicationStatus).map((status) => (
-                  <Box key={status} sx={{ mt: 3 }}>
-                    <ApplicationList
-                      status={status}
-                      applications={applications}
-                      onSave={handleSaveApplication}
-                    />
-                  </Box>
+                  <ApplicationList
+                    key={status}
+                    status={status}
+                    applications={applications}
+                    onSave={handleSaveApplication}
+                  />
                 ))}
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-    </ThemeProvider>
+              </Box>
+
+            </>
+          } />
+          <Route path="/resume" element={<ResumeEvaluator />} />
+          <Route path="/new-application" element={<ApplicationForm onAddApplication={handleAddApplication} />} />
+        </Routes>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;

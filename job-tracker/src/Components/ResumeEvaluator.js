@@ -28,7 +28,7 @@ function ResumeEvaluator() {
   };
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
       <Typography variant="h4" component="h1" gutterBottom>
       <Stars className="text-purple-600 w-10 h-10 mr-2 animate-pulse" />
          AI Resume Evaluator
