@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Box, Typography, TextField, Button } from '@mui/material';
+import emailjs from 'emailjs-com'; // Make sure to install emailjs-com
 
-const ApplicationStatus = Object.freeze({
-  PENDING: 'Pending',
-  ACCEPTED: 'Accepted',
-  REJECTED: 'Rejected'
-});
+//init emailjs with your user id
+emailjs.init('KMAWV91wrDXkqm3Hh');
 
-function App() {
+
+const App = () => {
   const [applications, setApplications] = useState([]);
   const [newApplication, setNewApplication] = useState({
     id: '',
     company: '',
     position: '',
     dateApplied: '',
-    status: ApplicationStatus.PENDING
+    status: 'PENDING',
+    email: '',
+    remindInMinutes: '' // Add remindInMinutes field
   });
 
   useEffect(() => {
@@ -26,7 +27,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const applicationWithId = {...newApplication, id: uuidv4()};
+    const applicationWithId = { ...newApplication, id: uuidv4() };
     fetch('http://localhost:3000/applications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -35,90 +36,100 @@ function App() {
     .then(response => response.json())
     .then(data => {
       setApplications([...applications, data]);
-      setNewApplication({ id: '', company: '', position: '', dateApplied: '', status: '' }); // reset the form
+      setNewApplication({ id: '', company: '', position: '', dateApplied: '', status: 'PENDING', email: '', remindInMinutes: '' }); // reset the form
+      sendEmail(newApplication.email, newApplication.remindInMinutes);
     });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewApplication(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const sendEmail = (email, minutes) => {
+    const milliseconds = minutes * 60 * 1000;
+
+    setTimeout(() => {
+      const templateParams = {
+        to_email: newApplication.email,
+        message: 'This is a reminder to follow up on your application at ' + newApplication.company + '.'
+      };
+
+      emailjs.send('service_zehmlri', 'template_7k0g1oq', templateParams, 'KMAWV91wrDXkqm3Hh')
+        .then((response) => {
+          console.log('Email sent successfully!', response.status, response.text);
+        }, (error) => {
+          console.error('Failed to send email.', error);
+        });
+    }, milliseconds);
   };
 
   return (
     <div>
-      {/* <h1>Job Applications</h1>
-      <ul>
-        {applications.map(app => (
-          <li key={app.id}>
-            {app.company} - {app.position} - {app.status}
-          </li>
-        ))}
-      </ul> */}
-
       <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Add New Application
-        </Typography>
-        <form onSubmit={handleSubmit}>
-        <TextField
-            fullWidth
-            margin="normal"
-            label="Company"
-            variant="outlined"
-            value={newApplication.company}
-            onChange={(e) => setNewApplication({ ...newApplication, company: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Position"
-            variant="outlined"
-            value={newApplication.position}
-            onChange={(e) => setNewApplication({ ...newApplication, position: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Date Applied"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            variant="outlined"
-            value={newApplication.dateApplied}
-            onChange={(e) => setNewApplication({ ...newApplication, dateApplied: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Status"
-            variant="outlined"
-            value={newApplication.status}
-            onChange={(e) => setNewApplication({ ...newApplication, status: e.target.value })}
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            type="submit"
-            sx={{ mt: 2 }}
-          >
-            Add Application
-          </Button>
-        </form>
-      </Box>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Job Applications
-        </Typography>
-        <List>
-          {applications.map(app => (
-            <ListItem key={app.id}>
-              <ListItemText
-                primary={`${app.company} - ${app.position}`}
-                secondary={app.status}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Add New Application
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Company"
+              variant="outlined"
+              name="company"
+              value={newApplication.company}
+              onChange={handleChange}
+            />
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Position"
+              variant="outlined"
+              name="position"
+              value={newApplication.position}
+              onChange={handleChange}
+            />
+            <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 2 }}>
+              Enter your email to be reminded to follow up
+            </Typography>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Email"
+              variant="outlined"
+              name="email"
+              value={newApplication.email}
+              onChange={handleChange}
+            />
+            <Typography variant="h6" component="h3" gutterBottom sx={{ mt: 2 }}>
+              Remind me in
+              <TextField
+                type="number"
+                name="remindInMinutes"
+                value={newApplication.remindInMinutes}
+                onChange={handleChange}
+                sx={{ width: '60px', mx: 1 }}
+                InputProps={{
+                  style: {
+                    height: '30px', // Adjust the height as needed
+                    fontSize: '16px' // Match the font size to the input text size
+                  }
+                }}
               />
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-    </Container>
+              minutes
+            </Typography>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </form>
+        </Box>
+      </Container>
     </div>
   );
-}
+};
 
 export default App;
