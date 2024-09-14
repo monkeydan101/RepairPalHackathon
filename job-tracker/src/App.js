@@ -130,8 +130,70 @@ function App() {
           Job Applications
         </Typography>
 
-        <List>
-            {applications.map(app => (
+        <List subheader="Pending">
+            {(applications.filter(app => (app.status === "Pending"))).map(app => (
+              <ListItem key={app.id}>
+                <ListItemText
+                  primary={`${app.company} - ${app.position}`}
+                  secondary={editId === app.id ? (
+                    <Select
+                      value={editStatus}
+                      onChange={(e) => setEditStatus(e.target.value)}
+                    >
+                      {Object.values(ApplicationStatus).map(status => (
+                        <MenuItem key={status} value={status}>{status}</MenuItem>
+                      ))}
+                    </Select>
+                  ) : app.status}
+                />
+                <ListItemSecondaryAction>
+                  {editId === app.id ? (
+                    <IconButton size="small" onClick={() => handleSaveClick(app.id)}>
+                      <SaveIcon fontSize="small" /> Save
+                    </IconButton>
+                  ) : (
+                    <IconButton size="small" onClick={() => handleEditClick(app)}>
+                      <EditIcon fontSize="small" /> Edit
+                    </IconButton>
+                  )}
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+
+          <List subheader="Accepted">
+            {(applications.filter(app => (app.status === "Accepted"))).map(app => (
+              <ListItem key={app.id}>
+                <ListItemText
+                  primary={`${app.company} - ${app.position}`}
+                  secondary={editId === app.id ? (
+                    <Select
+                      value={editStatus}
+                      onChange={(e) => setEditStatus(e.target.value)}
+                    >
+                      {Object.values(ApplicationStatus).map(status => (
+                        <MenuItem key={status} value={status}>{status}</MenuItem>
+                      ))}
+                    </Select>
+                  ) : app.status}
+                />
+                <ListItemSecondaryAction>
+                  {editId === app.id ? (
+                    <IconButton size="small" onClick={() => handleSaveClick(app.id)}>
+                      <SaveIcon fontSize="small" /> Save
+                    </IconButton>
+                  ) : (
+                    <IconButton size="small" onClick={() => handleEditClick(app)}>
+                      <EditIcon fontSize="small" /> Edit
+                    </IconButton>
+                  )}
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+
+          <List subheader="Rejected">
+            {(applications.filter(app => (app.status === "Rejected"))).map(app => (
               <ListItem key={app.id}>
                 <ListItemText
                   primary={`${app.company} - ${app.position}`}
