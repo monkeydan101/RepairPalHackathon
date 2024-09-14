@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Select, MenuItem } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 
 const ApplicationStatus = Object.freeze({
   PENDING: 'Pending',
@@ -17,6 +19,8 @@ function App() {
     dateApplied: '',
     status: ApplicationStatus.PENDING
   });
+  const [editId, setEditId] = useState(null);
+  const [editStatus, setEditStatus] = useState(ApplicationStatus.PENDING);
 
   useEffect(() => {
     fetch('http://localhost:3000/applications')
@@ -36,6 +40,26 @@ function App() {
     .then(data => {
       setApplications([...applications, data]);
       setNewApplication({ id: '', company: '', position: '', dateApplied: '', status: '' }); // reset the form
+    });
+  };
+
+  const handleEditClick = (app) => {
+    setEditId(app.id);
+    setEditStatus(app.status);
+  };
+
+  const handleSaveClick = (id) => {
+    const updatedApplications = applications.map((app) =>
+      app.id === id ? { ...app, status: editStatus } : app
+    );
+    setApplications(updatedApplications);
+    setEditId(null); // Exit edit mode
+
+     // PUT request
+     fetch(`http://localhost:3000/applications/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: editStatus })
     });
   };
 
@@ -105,16 +129,38 @@ function App() {
         <Typography variant="h4" component="h1" gutterBottom>
           Job Applications
         </Typography>
+
         <List>
-          {applications.map(app => (
-            <ListItem key={app.id}>
-              <ListItemText
-                primary={`${app.company} - ${app.position}`}
-                secondary={app.status}
-              />
-            </ListItem>
-          ))}
-        </List>
+            {applications.map(app => (
+              <ListItem key={app.id}>
+                <ListItemText
+                  primary={`${app.company} - ${app.position}`}
+                  secondary={editId === app.id ? (
+                    <Select
+                      value={editStatus}
+                      onChange={(e) => setEditStatus(e.target.value)}
+                    >
+                      {Object.values(ApplicationStatus).map(status => (
+                        <MenuItem key={status} value={status}>{status}</MenuItem>
+                      ))}
+                    </Select>
+                  ) : app.status}
+                />
+                <ListItemSecondaryAction>
+                  {editId === app.id ? (
+                    <IconButton size="small" onClick={() => handleSaveClick(app.id)}>
+                      <SaveIcon fontSize="small" /> Save
+                    </IconButton>
+                  ) : (
+                    <IconButton size="small" onClick={() => handleEditClick(app)}>
+                      <EditIcon fontSize="small" /> Edit
+                    </IconButton>
+                  )}
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+          </List>
+
       </Box>
     </Container>
     </div>
