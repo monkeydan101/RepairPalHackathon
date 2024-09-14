@@ -16,14 +16,16 @@ let jobApps = [
         company: "Google",
         position: "Software Engineer",
         dateApplied: "2020-01-01",
-        status: "Pending"
+        status: "Pending",
+        notes: ""
     },
     {
         id: uuid.v4(),
         company: "Facebook",
         position: "Product Manager",
         dateApplied: "2020-01-02",
-        status: "Rejected"
+        status: "Rejected",
+        notes: ""
     }
 ];
 
@@ -45,23 +47,20 @@ app.post('/applications', (req, res) => {
     console.log("POST /applications");
 });
 
-app.put('/applications/:id/status', (req, res) => {
+app.put('/applications/:id', (req, res) => {
     const id = req.params.id;
-    const status = req.body.status;
+    const {status, notes} = req.body;
 
     let application = jobApps.find(app => app.id === id);
 
     if (application) {
-        application.status = status;
+        if (status) application.status = status;
+        if (notes !== undefined) application.notes = notes;
         res.json(application);
     } else {
         res.status(404).send(`Application with id ${id} not found`);
     }
-    console.log(`PUT /applications/${id}/status`);
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`PUT /applications/${id}`);
 });
 
 // AI Resume Recommendation
@@ -115,6 +114,7 @@ app.post('/resume/evaluate', async (req, res) => {
 
 });
 
+<<<<<<< HEAD
 function runPythonScript(prompt) {
     return new Promise((resolve, reject) => {
         // Spawn the Python process
@@ -143,3 +143,9 @@ function runPythonScript(prompt) {
         });
     });
 }
+=======
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+>>>>>>> 52fec50038de9b265d8f26b91dbc82523f37f4b0
