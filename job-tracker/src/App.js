@@ -1,8 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Container, Box, Typography, Paper, Grid, CssBaseline } from '@mui/material';
 import ApplicationForm from './Components/ApplicationForm';
 import ApplicationList from './Components/ApplicationList';
 import sendEmail from './Components/ReminderEmail';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    background: {
+      default: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 500,
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
+        },
+      },
+    },
+  },
+});
 
 const ApplicationStatus = {
   PENDING: 'Pending',
@@ -49,22 +83,48 @@ const App = () => {
   };
 
   return (
-    <Container>
-      <ApplicationForm onAddApplication={handleAddApplication} />
-      <Box mt={4}>
-        <Typography variant="h5" gutterBottom>
-          Applications
-        </Typography>
-        {Object.values(ApplicationStatus).map((status) => (
-          <ApplicationList
-            key={status}
-            status={status}
-            applications={applications}
-            onSave={handleSaveApplication}
-          />
-        ))}
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box
+        sx={{
+          backgroundColor: 'background.default',
+          minHeight: '100vh',
+          py: 4,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Typography variant="h4" gutterBottom align="center" sx={{ mb: 4 }}>
+            Application Tracker
+          </Typography>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={4}>
+              <Paper elevation={3} sx={{ p: 3 }}>
+                <Typography variant="h5" gutterBottom>
+                  New Application
+                </Typography>
+                <ApplicationForm onAddApplication={handleAddApplication} />
+              </Paper>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <Paper elevation={3} sx={{ p: 3 }}>
+                <Typography variant="h5" gutterBottom>
+                  Applications
+                </Typography>
+                {Object.values(ApplicationStatus).map((status) => (
+                  <Box key={status} sx={{ mt: 3 }}>
+                    <ApplicationList
+                      status={status}
+                      applications={applications}
+                      onSave={handleSaveApplication}
+                    />
+                  </Box>
+                ))}
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
       </Box>
-    </Container>
+    </ThemeProvider>
   );
 };
 
