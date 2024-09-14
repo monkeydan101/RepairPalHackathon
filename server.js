@@ -91,3 +91,8 @@ app.post('/resume/evaluate', (req, res) => {
     });
     console.log("POST /resume/ai-recommendation");
 });
+
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
