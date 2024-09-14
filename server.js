@@ -155,7 +155,6 @@ app.post('/resume/evaluate', async (req, res) => {
 
 });
 
-<<<<<<< HEAD
 function runPythonScript(prompt) {
     return new Promise((resolve, reject) => {
         // Spawn the Python process
@@ -184,9 +183,7 @@ function runPythonScript(prompt) {
         });
     });
 }
-=======
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
->>>>>>> 52fec50038de9b265d8f26b91dbc82523f37f4b0
