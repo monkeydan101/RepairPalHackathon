@@ -4,6 +4,7 @@ import { TextField, Button, Container, Typography, Box, List, ListItem, ListItem
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { BrowserRouter as Router } from 'react-router-dom';
+import ResumeEvaluator from './ResumeEvaluator';
 
 const ApplicationStatus = Object.freeze({
   PENDING: 'Pending',
@@ -231,6 +232,7 @@ function App() {
             ))}
           </List>
         </Box>
+        <ResumeEvaluator />
       </Container>
     </Router>
   );
