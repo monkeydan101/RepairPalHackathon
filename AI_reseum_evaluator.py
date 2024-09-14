@@ -5,7 +5,7 @@ import os
 import sys
 
 
-os.environ["OPENAI_API_KEY"] = ""
+# os.environ["OPENAI_API_KEY"] = ""
 from langchain_openai import ChatOpenAI
 
 model = ChatOpenAI(model="gpt-4")
