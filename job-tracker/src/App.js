@@ -34,7 +34,7 @@ const App = () => {
 
   const handleSaveApplication = (id, status, notes) => {
     fetch(`http://localhost:3000/applications/${id}`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status, notes })
     })
