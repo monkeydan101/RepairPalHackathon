@@ -1,11 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Container, Box, Typography, Paper, Grid, CssBaseline } from '@mui/material';
 import ApplicationForm from './Components/ApplicationForm';
 import ApplicationList from './Components/ApplicationList';
 import sendEmail from './Components/ReminderEmail';
 import Navbar from './Components/NavBar';
 import ResumeEvaluator from './Components/ResumeEvaluator';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+    background: {
+      default: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 500,
+    },
+  },
+  components: {
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
+        },
+      },
+    },
+  },
+});
 
 const ApplicationStatus = {
   PENDING: 'Pending',
