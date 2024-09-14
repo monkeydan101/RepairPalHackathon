@@ -3,6 +3,9 @@ import { Container, Box, Typography } from '@mui/material';
 import ApplicationForm from './Components/ApplicationForm';
 import ApplicationList from './Components/ApplicationList';
 import sendEmail from './Components/ReminderEmail';
+import Navbar from './Components/NavBar';
+import ResumeEvaluator from './Components/ResumeEvaluator';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 const ApplicationStatus = {
   PENDING: 'Pending',
@@ -49,23 +52,38 @@ const App = () => {
   };
 
   return (
-    <Container>
-      <ApplicationForm onAddApplication={handleAddApplication} />
-      <Box mt={4}>
-        <Typography variant="h5" gutterBottom>
-          Applications
-        </Typography>
-        {Object.values(ApplicationStatus).map((status) => (
-          <ApplicationList
-            key={status}
-            status={status}
-            applications={applications}
-            onSave={handleSaveApplication}
-          />
-        ))}
-      </Box>
-    </Container>
+
+    <Router>
+      <div>
+        
+        <Navbar />
+
+        <Routes>
+          <Route path="/" element={
+            <>
+
+              <Box maxWidth="sm" sx={{ mt: 4, mx: "auto", textAlign: "center" }}>
+                <Typography variant="h5" gutterBottom>
+                  Job Applications
+                </Typography>
+                {Object.values(ApplicationStatus).map((status) => (
+                  <ApplicationList
+                    key={status}
+                    status={status}
+                    applications={applications}
+                    onSave={handleSaveApplication}
+                  />
+                ))}
+              </Box>
+
+            </>
+          } />
+          <Route path="/resume" element={<ResumeEvaluator />} />
+          <Route path="/new-application" element={<ApplicationForm onAddApplication={handleAddApplication} />} />
+        </Routes>
+      </div>
+    </Router>
   );
-};
+}
 
 export default App;
