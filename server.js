@@ -29,6 +29,47 @@ let jobApps = [
     }
 ];
 
+let masterResume = {
+    name : "John Doe",
+    experience : [
+        {
+            position : "Software Engineer",
+            organization : "ABC Inc",
+            responsibilites : "Developed web applications"
+        }
+    ],
+    contactInfo : ["7801234567", "johndoe@gmail.com", "123 John Doe Way" ],
+    education : [{
+        schoolName : "University of XYZ",
+        programName : "Software Engineering"
+    }],
+    projects : [{
+        projectName : "Amazon",
+        projectDetails : "I made amazon"
+    }]
+};
+
+let resumeVersions = [
+    {
+        name: "John Doe",
+        experience: [
+            {
+                position: "Software Engineer",
+                organization: "ABC Inc",
+                responsibilities: "Developed web applications"
+            }
+        ],
+        contactInfo: ["7801234567", "johndoe@gmail.com", "123 John Doe Way"],
+        education: [{
+            schoolName: "University of XYZ",
+            programName: "Software Engineering"
+        }],
+        projects: [{
+            projectName: "Google",
+            projectDetails: "I made google"
+        }]
+}];
+
 app.get('/applications', (req, res) => {
     res.json(jobApps);
     console.log("GET /applications");
